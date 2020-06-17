@@ -44,10 +44,10 @@ namespace StableAPI.Data
 
             var users = new User[]
             {
-                new User {Name = "Boss", Surname = "E", UserName = "admin", PassHash = "admin"},
-                new User {Name = "Secretary", Surname = "F", UserName = "secretary", PassHash = "secretary"},
-                new User {Name = "Groom", Surname = "G", UserName = "groom", PassHash = "groom"},
-                new User {Name = "Doe", Surname = "John", UserName = "jdoe", PassHash = "password"}
+                new User {Name = "Boss", Surname = "E", UserName = "admin", PassHash = "admin", RoleID = 2},
+                new User {Name = "Secretary", Surname = "F", UserName = "secretary", PassHash = "secretary", RoleID = 4},
+                new User {Name = "Groom", Surname = "G", UserName = "groom", PassHash = "groom", RoleID = 3},
+                new User {Name = "Doe", Surname = "John", UserName = "jdoe", PassHash = "password", RoleID = 1}
             };
             foreach (var user in users)
             {
@@ -63,6 +63,18 @@ namespace StableAPI.Data
             foreach (var stable in stables)
             {
                 context.Stables.Add(stable);
+            }
+
+            context.SaveChanges();
+
+            var horses = new Horse[]
+            {
+                new Horse{OwnerID = 1, Name = "Pataclop"},
+                new Horse{Owner = new Person{Name = "Owner", Surname = "StarPony"}, Name = "StarPony"}
+            };
+            foreach (var horse in horses)
+            {
+                context.Horses.Add(horse);
             }
 
             context.SaveChanges();

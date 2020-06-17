@@ -12,7 +12,7 @@ namespace StableAPI.Models
         public ICollection<Box> Boxes { get; set; }
         public ICollection<Calendar> Calendars { get; set; }
         public ICollection<Membership> Memberships { get; set; }
-        public ICollection<Staff> Staff { get; set; }
+        public ICollection<User> Users { get; set; }
         public ICollection<StockEntry> StockEntries { get; set; }
     }
 }

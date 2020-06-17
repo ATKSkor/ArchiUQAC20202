@@ -23,11 +23,6 @@ namespace StableAPI.Data
                 m.StableID, m.PersonID
             });
 
-            modelBuilder.Entity<Staff>().HasKey(s => new
-            {
-                s.StableID, s.PersonID
-            });
-
             modelBuilder.Entity<StockEntry>().HasKey(se => new
             {
                 se.StableID, se.ItemID
@@ -49,7 +44,6 @@ namespace StableAPI.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<Secret> Secrets { get; set; }
         public DbSet<Stable> Stables { get; set; }
-        public DbSet<Staff> Staff { get; set; }
         public DbSet<StockEntry> StockEntries { get; set; }
         public DbSet<StockItem> StockItems { get; set; }
         public DbSet<User> Users { get; set; }
