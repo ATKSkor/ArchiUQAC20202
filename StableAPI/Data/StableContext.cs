@@ -37,6 +37,7 @@ namespace StableAPI.Data
         public DbSet<Horse> Horses { get; set; }
         public DbSet<License> Licenses { get; set; }
         public DbSet<MedicEntry> MedicEntries { get; set; }
+        public DbSet<MedicReport> MedicReports { get; set; }
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<Registration> Registrations { get; set; }

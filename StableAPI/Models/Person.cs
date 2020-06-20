@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace StableAPI.Models
 {
@@ -9,7 +10,7 @@ namespace StableAPI.Models
         [Required] public string Name { get; set; }
         [Required] public string Surname { get; set; }
         
-        public ICollection<Horse> Horses { get; set; }
+        public virtual ICollection<Horse> Horses { get; set; }
         public ICollection<Membership> Memberships { get; set; }
     }
 }
