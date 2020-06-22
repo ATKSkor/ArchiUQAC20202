@@ -37,7 +37,7 @@ namespace StableAPI.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = "groom, secretary, admin")]
-        public async Task<ActionResult<SingleHorseDto>> GetHorseById(int id)
+        public async Task<ActionResult<SingleHorseDto>> GetHorse(int id)
         {
             var horse = await _context.Horses
                 .Where(h => h.ID == id)
@@ -52,6 +52,70 @@ namespace StableAPI.Controllers
             }
 
             return HorseToSingleDto(horse);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "groom, admin")]
+        public async Task<IActionResult> CreateHorse(HorseDto horseDto)
+        {
+            if (horseDto.Name == null || horseDto.OwnerID <= 0)
+            {
+                return BadRequest();
+            }
+
+            var horse = new Horse
+            {
+                Name = horseDto.Name,
+                OwnerID = horseDto.OwnerID
+            };
+
+            await _context.Horses.AddAsync(horse);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetHorse), new {id = horse.ID}, horse);
+        }
+
+        [HttpPost("{id}")]
+        [Authorize(Roles = "groom, admin")]
+        public async Task<IActionResult> UpdateHorse(int id, HorseDto horseDto)
+        {
+            if (horseDto.Name == null || horseDto.OwnerID <= 0)
+            {
+                return BadRequest();
+            }
+
+            var horse = await _context.Horses
+                .FindAsync(id);
+
+            if (horse == null)
+            {
+                return NotFound();
+            }
+
+            horse.Name = horseDto.Name;
+            horse.OwnerID = horseDto.OwnerID;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "groom, admin")]
+        public async Task<IActionResult> DeleteHorse(int id)
+        {
+            var horse = await _context.Horses
+                .FindAsync(id);
+
+            if (horse == null)
+            {
+                return NotFound();
+            }
+
+            _context.Horses.Remove(horse);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         private static HorseDto HorseToDto(Horse horse)
