@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using StableAPI.Models;
 
 namespace StableAPI.Data
@@ -77,6 +79,24 @@ namespace StableAPI.Data
                 context.Horses.Add(horse);
             }
 
+            context.SaveChanges();
+
+            AddMedicEntry(context);
+        }
+
+        private static void AddMedicEntry(StableContext context)
+        {
+            var doc = File.ReadAllBytes("./Resources/dummy.pdf");
+
+            var medicEntry = new MedicEntry
+            {
+                Report = new MedicReport{Document = doc},
+                HorseID = 1,
+                IssuedDate = DateTime.Today,
+                Title = "Very Important Report"
+            };
+
+            context.MedicEntries.Add(medicEntry);
             context.SaveChanges();
         }
     }

@@ -11,7 +11,7 @@ namespace StableAPI.Models
         public int OwnerID { get; set; }
 
 
-        [ForeignKey("OwnerID")] public Person Owner { get; set; }
+        [ForeignKey("OwnerID")] public virtual Person Owner { get; set; }
         public ICollection<Box> Boxes { get; set; }
         public ICollection<MedicEntry> MedicEntries { get; set; }
     }
