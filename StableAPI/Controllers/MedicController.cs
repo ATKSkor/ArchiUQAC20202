@@ -98,7 +98,9 @@ namespace StableAPI.Controllers
         public async Task<IActionResult> DeleteMedicEntry(int id)
         {
             var medicEntry = await _context.MedicEntries
-                .FindAsync(id);
+                .Where(me => me.ID == id)
+                .Include(me => me.Report)
+                .FirstOrDefaultAsync();
 
             if (medicEntry == null)
             {
@@ -107,6 +109,12 @@ namespace StableAPI.Controllers
 
             _context.MedicEntries
                 .Remove(medicEntry);
+            await _context.SaveChangesAsync();
+
+            var rep = medicEntry.Report;
+
+            _context.MedicReports
+                .Remove(rep);
             await _context.SaveChangesAsync();
 
             return Ok();
