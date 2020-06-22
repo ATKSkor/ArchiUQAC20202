@@ -100,5 +100,36 @@ namespace StableAPI.Controllers
         {
             return Unauthorized();
         }
+
+        [HttpGet("rights")]
+        [Authorize]
+        public ActionResult<RolesDto> GetRights()
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+
+            var roles = new RolesDto();
+
+            if (claimsIdentity == null)
+            {
+                return BadRequest("Not logged");
+            }
+
+            var userRole = claimsIdentity.FindFirst(ClaimTypes.Role).Value;
+
+            switch (userRole)
+            {
+                case "admin":
+                    roles.IsAdmin = true;
+                    break;
+                case "groom":
+                    roles.IsGroom = true;
+                    break;
+                case "secretary":
+                    roles.IsSecretary = true;
+                    break;
+            }
+
+            return roles;
+        }
     }
 }
