@@ -7,6 +7,11 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueRouter from 'vue-router'
 import Home from "@/components/Home";
+import Admin from "@/components/Admin";
+import Equipment from "@/components/Equipment";
+import Event from "@/components/Event";
+import Horse from "@/components/Horse";
+import Member from "@/components/Member";
 
 Vue.use(VueRouter)
 Vue.use(BootstrapVue);
@@ -16,7 +21,12 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.config.productionTip = false
 
 const routes = [
-  { path: '/home', component: Home }
+  { path: '/', component: Home },
+  { path: '/admin', component: Admin },
+  { path: '/equipment', component: Equipment },
+  { path: '/event', component: Event },
+  { path: '/horse', component: Horse },
+  { path: '/member', component: Member },
 ];
 
 const router = new VueRouter({routes})

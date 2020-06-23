@@ -102,16 +102,18 @@ namespace StableAPI.Controllers
         }
 
         [HttpGet("rights")]
-        [Authorize]
         public ActionResult<RolesDto> GetRights()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
 
             var roles = new RolesDto();
 
-            if (claimsIdentity == null)
+            if (claimsIdentity == null || !claimsIdentity.IsAuthenticated)
             {
-                return BadRequest("Not logged");
+                return roles;
+            } else
+            {
+                roles.IsConnected = true;
             }
 
             var userRole = claimsIdentity.FindFirst(ClaimTypes.Role).Value;

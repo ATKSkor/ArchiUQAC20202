@@ -10,7 +10,14 @@
                         <label for="username" class="m-0">Username</label>
                     </b-col>
                     <b-col cols="9" lg="4" class="">
-                        <b-form-input id="username" size="sm" type="text" trim v-model="login.login"></b-form-input>
+                        <b-form-input
+                                id="username"
+                                size="sm"
+                                type="text"
+                                trim
+                                v-model="login.login"
+                                autocomplete="off"
+                        ></b-form-input>
                     </b-col>
                     <b-col lg="3"></b-col>
                 </b-row>
@@ -40,6 +47,9 @@
                     <b-col lg="4"></b-col>
                 </b-row>
             </div>
+        </div>
+        <div v-else>
+            <h2 class="text-center pt-5 pb-3">Choose a task to perform</h2>
         </div>
     </div>
 </template>
