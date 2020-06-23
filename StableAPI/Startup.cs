@@ -18,6 +18,7 @@ namespace StableAPI
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,11 +31,14 @@ namespace StableAPI
         {
             services.AddCors(options =>
             {
-                options.AddPolicy(name: "CorsPolicy",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin().AllowAnyMethod();
-                    });
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://localhost:8080")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials();
+                                  });
             });
 
             services.AddDbContext<StableContext>(options =>
@@ -54,6 +58,7 @@ namespace StableAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -63,7 +68,7 @@ namespace StableAPI
 
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthentication();
             app.UseAuthorization();
