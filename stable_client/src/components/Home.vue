@@ -10,7 +10,7 @@
                         <label for="username" class="m-0">Username</label>
                     </b-col>
                     <b-col cols="9" lg="4" class="">
-                        <b-form-input id="username" size="sm" type="text" trim></b-form-input>
+                        <b-form-input id="username" size="sm" type="text" trim v-model="login.login"></b-form-input>
                     </b-col>
                     <b-col lg="3"></b-col>
                 </b-row>
@@ -20,7 +20,7 @@
                         <label for="password" class="m-0">Password</label>
                     </b-col>
                     <b-col cols="9" lg="4" class="">
-                        <b-form-input id="password" size="sm" type="password"></b-form-input>
+                        <b-form-input id="password" size="sm" type="password" v-model="login.pass"></b-form-input>
                     </b-col>
                     <b-col lg="3"></b-col>
                 </b-row>
@@ -54,8 +54,8 @@
         data: function () {
             return {
                 login : {
-                    username : '',
-                    password : ''
+                    login : '',
+                    pass : ''
                 }
             }
         }
@@ -78,7 +78,13 @@
     .rounded-bottom-left {
         border-bottom-left-radius: .25rem !important;
     }
-    .form-control {
+    .form-control,
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active
+    {
+        -webkit-text-fill-color:rgba(255, 255, 255, 0.8) !important;
         color: rgba(255, 255, 255, 0.8) !important;
         background-color: rgba(255, 255, 255, 0.2) !important;
     }

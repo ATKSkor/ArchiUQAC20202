@@ -35,7 +35,7 @@
           isBoss : false,
           isAdmin : false
         },
-        baseUrl : 'http://localhost:5000/',
+        baseUrl : 'https://localhost:5001',
         states : {
           login : {
             running : false,
@@ -52,22 +52,47 @@
       login : function (loginData) {
         let that = this;
         that.states.login.running = true
-        axios.post(this.baseUrl + 'login', loginData, { withCredentials: true })
-        .then()
-        .catch(error => {
-          that.toast.title = 'Error during login';
-          that.toast.body = error.response ? error.response : error.message;
-          that.$bvToast.show('error_toast');
-          that.states.login.running = false;
-        })
-
+        axios.post(this.baseUrl + '/auth/login', loginData, { withCredentials: true })
+                .then(() => {
+                  that.getRights();
+                  that.states.login.running = false;
+                  that.states.login.error = false;
+                })
+                .catch(error => {
+                  that.handleError("Error during login", error);
+                  that.states.login.running = false;
+                  that.states.login.error = true;
+                  that.rights.isConnected = true;
+                })
       },
       getRights : function () {
         let that = this;
-        axios.get(this.baseUrl + 'rights', { withCredentials: true })
-        .then(function (response) {
-          that.rights = response.data;
+        axios.get(this.baseUrl + '/auth/rights', { withCredentials: true })
+                .then(function (response) {
+                  that.rights = response.data;
+                  that.rights.isConnected = true;
+                }).catch(error => {
+          that.handleError("Error while retrieving user rights", error)
+          that.states.login.running = false;
+          that.states.login.error = true;
+          that.rights.isConnected = false;
         })
+      },
+      handleError : function (title, error) {
+        this.toast.title = title;
+        if (error.response !== undefined && error.response.status !== undefined) {
+          this.toast.body = "(http " + error.response.status + ") ";
+        } else {
+          this.toast.body = "(Status unknown) ";
+        }
+        if (error.response !== undefined && error.response.data !== undefined) {
+          this.toast.body += error.response.data;
+        } else if (error.message !== undefined) {
+          this.toast.body += error.message;
+        } else {
+          this.toast += 'Unspecified error';
+        }
+        this.$bvToast.show('error_toast');
       }
     }
   }
