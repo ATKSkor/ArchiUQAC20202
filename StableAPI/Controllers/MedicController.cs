@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -37,7 +38,7 @@ namespace StableAPI.Controllers
                 return NotFound();
             }
 
-            return report;
+            return File(report.Report.Document, "application/pdf", report.Title + ".pdf");
         }
 
         // POST: api/Medic
@@ -82,6 +83,7 @@ namespace StableAPI.Controllers
             if (newEntry.Report != null)
             {
                 _context.MedicReports.Remove(medicEntry.Report);
+                medicEntry.Report = newEntry.Report;
             }
 
             medicEntry.Title = newEntry.Title;
