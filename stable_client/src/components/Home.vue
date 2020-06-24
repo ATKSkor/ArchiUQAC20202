@@ -48,9 +48,48 @@
                 </b-row>
             </div>
         </div>
-        <div v-else>
-            <h2 class="text-center pt-5 pb-3">Choose a task to perform</h2>
-        </div>
+        <b-container v-else>
+            <b-row>
+                <b-col cols="12">
+                    <h2 class="text-center pt-5 pb-3">Choose a category</h2>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col class="p-2" cols="12" sm="6" lg="4" v-if="rights.isAdmin">
+                    <b-btn to="/admin" class="w-100 huge-btn">
+                        <font-awesome-icon icon="user-shield"></font-awesome-icon><br>
+                        <span>Admin</span>
+                    </b-btn>
+                </b-col>
+                <b-col class="p-2" cols="12" sm="6" lg="4" v-if="rights.isAdmin || rights.isGroom">
+                    <b-btn to="/horse" class="w-100 huge-btn">
+                        <font-awesome-icon icon="horse"></font-awesome-icon><br>
+                        <span>Horse</span>
+                    </b-btn>
+                </b-col>
+                <b-col class="p-2" cols="12" sm="6" lg="4" v-if="rights.isAdmin || rights.isGroom">
+                    <b-btn to="/equipment" class="w-100 huge-btn">
+                        <font-awesome-icon icon="boxes"></font-awesome-icon><br>
+                        <span>Equipment</span>
+                    </b-btn>
+                </b-col>
+                <b-col class="p-2" cols="12" sm="6" lg="4" v-if="rights.isAdmin || rights.isGroom || rights.isSecretary">
+                    <b-btn to="/event" class="w-100 huge-btn">
+                        <font-awesome-icon icon="calendar-alt"></font-awesome-icon><br>
+                        <span>Event</span>
+                    </b-btn>
+                </b-col>
+                <b-col class="p-2" cols="12" sm="6" lg="4" v-if="rights.isAdmin || rights.isGroom || rights.isSecretary">
+                    <b-btn to="/member" class="w-100 huge-btn">
+                        <font-awesome-icon icon="users"></font-awesome-icon><br>
+                        <span>Member</span>
+                    </b-btn>
+                </b-col>
+            </b-row>
+
+
+
+        </b-container>
     </div>
 </template>
 
@@ -59,7 +98,7 @@
         name: "Home",
         props: {
             rights : Object,
-            states : Object
+            states : Object,
         },
         data: function () {
             return {
@@ -87,6 +126,14 @@
     }
     .rounded-bottom-left {
         border-bottom-left-radius: .25rem !important;
+    }
+    .huge-btn {
+        width: 100% !important;
+        height: 15rem !important;
+        font-size: 4rem;
+        span {
+            font-size: 2rem;
+        }
     }
     .form-control,
     input:-webkit-autofill,
