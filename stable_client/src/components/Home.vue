@@ -112,9 +112,6 @@
 </script>
 
 <style lang="scss" scoped>
-    * {
-        color: rgba(255, 255, 255, 0.8);
-    }
     .rounded-top-left {
         border-top-left-radius: .25rem !important;
     }
