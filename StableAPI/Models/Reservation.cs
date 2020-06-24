@@ -9,10 +9,9 @@ namespace StableAPI.Models
         public int Quantity { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public int StableID { get; set; }
-        public int ItemID { get; set; }
+        public int StockEntryStableID { get; set; }
+        public int StockEntryItemID { get; set; }
 
-        [ForeignKey("ItemID")] public StockItem Item { get; set; }
         public StockEntry StockEntry { get; set; }
     }
 }

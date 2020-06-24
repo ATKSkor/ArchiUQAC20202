@@ -8,7 +8,7 @@ namespace StableAPI.Models
         public int ItemID { get; set; }
         public int Quantity { get; set; }
 
-        public Stable Stable { get; set; }
+        public virtual Stable Stable { get; set; }
         public StockItem Item { get; set; }
         public ICollection<Reservation> Reservations { get; set; }
     }

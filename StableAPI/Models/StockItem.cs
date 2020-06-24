@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 
 namespace StableAPI.Models
 {
@@ -6,6 +6,6 @@ namespace StableAPI.Models
     {
         public int ID { get; set; }
         public string ItemName { get; set; }
-        public Collection<StockEntry> StockEntries { get; set; }
+        public virtual ICollection<StockEntry> StockEntries { get; set; }
     }
 }

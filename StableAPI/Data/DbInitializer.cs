@@ -18,10 +18,10 @@ namespace StableAPI.Data
 
             var roles = new Role[]
             {
-                new Role{Name = "default"},
-                new Role{Name = "admin"},
-                new Role{Name = "groom"},
-                new Role{Name = "secretary"},
+                new Role {Name = "default"},
+                new Role {Name = "admin"},
+                new Role {Name = "groom"},
+                new Role {Name = "secretary"},
             };
             foreach (var role in roles)
             {
@@ -47,7 +47,10 @@ namespace StableAPI.Data
             var users = new User[]
             {
                 new User {Name = "Boss", Surname = "E", UserName = "admin", PassHash = "admin", RoleID = 2},
-                new User {Name = "Secretary", Surname = "F", UserName = "secretary", PassHash = "secretary", RoleID = 4},
+                new User
+                {
+                    Name = "Secretary", Surname = "F", UserName = "secretary", PassHash = "secretary", RoleID = 4
+                },
                 new User {Name = "Groom", Surname = "G", UserName = "groom", PassHash = "groom", RoleID = 3},
                 new User {Name = "Doe", Surname = "John", UserName = "jdoe", PassHash = "password", RoleID = 1}
             };
@@ -60,7 +63,7 @@ namespace StableAPI.Data
 
             var stables = new Stable[]
             {
-                new Stable{BossID = 5},
+                new Stable {BossID = 5},
             };
             foreach (var stable in stables)
             {
@@ -71,8 +74,8 @@ namespace StableAPI.Data
 
             var horses = new Horse[]
             {
-                new Horse{OwnerID = 1, Name = "Pataclop"},
-                new Horse{Owner = new Person{Name = "Owner", Surname = "StarPony"}, Name = "StarPony"}
+                new Horse {OwnerID = 1, Name = "Pataclop"},
+                new Horse {Owner = new Person {Name = "Owner", Surname = "StarPony"}, Name = "StarPony"}
             };
             foreach (var horse in horses)
             {
@@ -82,6 +85,31 @@ namespace StableAPI.Data
             context.SaveChanges();
 
             AddMedicEntry(context);
+
+            var stockItems = new StockItem[]
+            {
+                new StockItem {ItemName = "Helmet"},
+                new StockItem {ItemName = "Saddle"},
+                new StockItem {ItemName = "Best Item"}
+            };
+            foreach (var stockItem in stockItems)
+            {
+                context.StockItems.Add(stockItem);
+            }
+
+            context.SaveChanges();
+
+            var stockEntries = new StockEntry[]
+            {
+                new StockEntry {ItemID = 1, StableID = 1, Quantity = 50},
+                new StockEntry {ItemID = 2, StableID = 1, Quantity = 70},
+            };
+            foreach (var stockEntry in stockEntries)
+            {
+                context.StockEntries.Add(stockEntry);
+            }
+
+            context.SaveChanges();
         }
 
         private static void AddMedicEntry(StableContext context)
