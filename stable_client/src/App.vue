@@ -22,7 +22,11 @@
             v-bind:base-url="baseUrl"
             v-bind:rights="rights"
             v-bind:states="states"
+            v-bind:owners="owners"
+            v-bind:boxes="boxes"
             v-on:error="handleError"
+            v-on:refresh-owner="getOwners"
+            v-on:refresh-box="getBoxes"
             v-on:login="login">
     </router-view>
     <b-toast id="error_toast" variant="danger" solid toaster="b-toaster-top-center">
@@ -65,7 +69,11 @@
         toast : {
           title : '',
           body  : ''
-        }
+        },
+        owners : [
+        ],
+        boxes : [
+        ]
       }
     },
     methods : {
@@ -113,6 +121,27 @@
           that.getRights();
         })
       },
+      getOwners: function() {
+        this.owners = [
+          { id: 4, name: "Doe", surname : "John" },
+          { id: 3, name: "Martin", surname : "Pierre" },
+          { id: 2, name: "Muller", surname : "Hans" },
+          { id: 1, name: "West", surname : "Malik" },
+          { id: 9, name: "Owner", surname: "StarPony"}
+        ];
+        this.owners.forEach((owner) => { owner.fullname = owner.name + " " + owner.surname})
+      },
+      getBoxes: function() {
+        this.boxes = [
+          { id: 1 },
+          { id: 2 },
+          { id: 3 },
+          { id: 4 }
+        ]
+      },
+      // deleteHorse(id) {
+      //   this.horses.splice(this.horses.filter(horse => horse.id === id));
+      // },
       handleError : function (errorData) {
         console.error(errorData.error);
         this.toast.title = errorData.title;
