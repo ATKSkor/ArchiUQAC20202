@@ -114,7 +114,7 @@ namespace StableAPI.Data
             var boxes = new Box[]
             {
                 new Box {Active = false, StableID = 1},
-                new Box {Active = true, StableID = 1, OccupantID = 2}
+                new Box {Active = true, StableID = 1, Occupant = new Horse{Name = "Clopclopclop", OwnerID = 2}}
             };
             foreach (var box in boxes)
             {

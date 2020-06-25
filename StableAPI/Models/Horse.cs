@@ -9,10 +9,10 @@ namespace StableAPI.Models
         public int ID { get; set; }
         public string Name { get; set; }
         public int OwnerID { get; set; }
-
+        public int? BoxID { get; set; }
 
         [ForeignKey("OwnerID")] public virtual Person Owner { get; set; }
-        public ICollection<Box> Boxes { get; set; }
+        [ForeignKey("BoxID")] public virtual Box Box { get; set; }
         public ICollection<MedicEntry> MedicEntries { get; set; }
     }
 }
