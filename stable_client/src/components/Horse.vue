@@ -188,7 +188,10 @@
                     return false;
                 }
                 let horse = this.horses.find(horse => horse.id === this.savedHorse.id);
-                return horse.name !== this.savedHorse.name || horse.ownerID !== this.savedHorse.ownerID;
+                return horse.name !== this.savedHorse.name
+                    || horse.ownerID !== this.savedHorse.ownerID
+                    || horse.boxID !== this.savedHorse.boxID
+                    ;
             }
         },
         methods: {
@@ -231,6 +234,7 @@
                 let that = this;
                 let updateData = {
                     name : horse.name,
+                    boxID: horse.boxID,
                     ownerId : horse.ownerID
                 };
                 axios.post(this.baseUrl + '/horse/' + horse.id, updateData, { withCredentials: true })
@@ -251,6 +255,7 @@
                 let horse = this.newHorse;
                 let insertData = {
                     name: horse.name,
+                    boxID: horse.boxID,
                     ownerId: horse.ownerID
                 };
                 axios.post(this.baseUrl + '/horse/', insertData, { withCredentials: true })
