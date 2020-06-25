@@ -280,8 +280,8 @@
                 this.newHorse = {
                     id: 0,
                     name: "",
-                    ownerID: 1,
-                    boxID: 1,
+                    ownerID: this.owners[0] !== undefined ? this.owners[0].id : 0,
+                    boxID: this.boxes[0] !== undefined ? this.boxes[0].id : 0,
                     ownerFullName: "",
                     medicEntryIDs: []
                 };
