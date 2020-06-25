@@ -5,10 +5,10 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item to="/home">Home</b-nav-item>
-          <b-nav-item v-if="rights.isAdmin || rights.isGroom || rights.isSecretary" to="/event">Event</b-nav-item>
-          <b-nav-item v-if="rights.isAdmin || rights.isGroom || rights.isSecretary" to="/member">Member</b-nav-item>
-          <b-nav-item v-if="rights.isAdmin || rights.isGroom" to="/horse">Horse</b-nav-item>
-          <b-nav-item v-if="rights.isAdmin || rights.isGroom" to="/equipment">Equipment</b-nav-item>
+          <b-nav-item v-if="rights.isConnected" to="/event">Event</b-nav-item>
+          <b-nav-item v-if="rights.isConnected" to="/member">Member</b-nav-item>
+          <b-nav-item v-if="rights.isConnected" to="/horse">Horse</b-nav-item>
+          <b-nav-item v-if="rights.isAdmin || rights.isSecretary" to="/equipment">Equipment</b-nav-item>
           <b-nav-item v-if="rights.isAdmin" to="/admin">Admin</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
