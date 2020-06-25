@@ -110,6 +110,18 @@ namespace StableAPI.Data
             }
 
             context.SaveChanges();
+
+            var boxes = new Box[]
+            {
+                new Box {Active = false, StableID = 1},
+                new Box {Active = true, StableID = 1, Occupant = new Horse{Name = "Clopclopclop", OwnerID = 2}}
+            };
+            foreach (var box in boxes)
+            {
+                context.Boxes.Add(box);
+            }
+
+            context.SaveChanges();
         }
 
         private static void AddMedicEntry(StableContext context)

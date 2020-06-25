@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StableAPI.Models
 {
@@ -8,9 +9,8 @@ namespace StableAPI.Models
         public int ID { get; set; }
         [Required] public bool Active { get; set; }
         [Required] public int StableID { get; set; }
-        public int OccupantID { get; set; }
 
         public Stable Stable { get; set; }
-        public Horse Occupant { get; set; }
+        public virtual Horse Occupant { get; set; }
     }
 }

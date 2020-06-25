@@ -29,7 +29,7 @@ namespace StableAPI.Controllers
         {
             return await _context.Horses
                 .Include(h => h.Owner)
-                .Include(h => h.Boxes)
+                .Include(h => h.Box)
                 .Include(h => h.MedicEntries)
                 .Select(h => HorseToDto(h))
                 .ToListAsync();
@@ -42,7 +42,7 @@ namespace StableAPI.Controllers
             var horse = await _context.Horses
                 .Where(h => h.ID == id)
                 .Include(h => h.Owner)
-                .Include(h => h.Boxes)
+                .Include(h => h.Box)
                 .Include(h => h.MedicEntries)
                 .FirstOrDefaultAsync();
 
@@ -123,16 +123,12 @@ namespace StableAPI.Controllers
             var ret = new HorseDto
             {
                 ID = horse.ID,
+                BoxID = horse.BoxID,
                 OwnerID = horse.OwnerID,
                 OwnerFullName = new string(horse.Owner.Name + " " + horse.Owner.Surname),
                 Name = horse.Name,
                 MedicEntryIDs = new List<int>()
             };
-
-            if (horse.Boxes != null && horse.Boxes.Any())
-            {
-                ret.BoxID = horse.Boxes.First().ID;
-            }
 
             if (horse.MedicEntries == null) return ret;
             foreach (var me in horse.MedicEntries)
@@ -148,16 +144,12 @@ namespace StableAPI.Controllers
             var ret = new SingleHorseDto
             {
                 ID = horse.ID,
+                BoxID = horse.BoxID,
                 OwnerID = horse.OwnerID,
                 OwnerFullName = new string(horse.Owner.Name + " " + horse.Owner.Surname),
                 Name = horse.Name,
                 MedicEntries = horse.MedicEntries
             };
-
-            if (horse.Boxes != null && horse.Boxes.Any())
-            {
-                ret.BoxID = horse.Boxes.First().ID;
-            }
 
             return ret;
         }
