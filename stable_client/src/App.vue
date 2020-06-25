@@ -132,16 +132,14 @@
         this.owners.forEach((owner) => { owner.fullname = owner.name + " " + owner.surname})
       },
       getBoxes: function() {
-        this.boxes = [
-          { id: 1 },
-          { id: 2 },
-          { id: 3 },
-          { id: 4 }
-        ]
+        let that = this;
+        axios.get(this.baseUrl + '/box', { withCredentials: true })
+                .then(function (response) {
+                  that.boxes = response.data;
+                }).catch(error => {
+          that.handleError({ title: "Error while retrieving box list", error: error })
+        })
       },
-      // deleteHorse(id) {
-      //   this.horses.splice(this.horses.filter(horse => horse.id === id));
-      // },
       handleError : function (errorData) {
         console.error(errorData.error);
         this.toast.title = errorData.title;
