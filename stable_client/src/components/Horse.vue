@@ -42,7 +42,7 @@
                         <b-form-select
                                 size="sm"
                                 v-model="newHorse.boxID"
-                                :options="boxes"
+                                :options="availableBoxesForInsert"
                                 value-field="id"
                                 text-field="id"
                         ></b-form-select>
@@ -92,7 +92,7 @@
                                 v-else
                                 size="sm"
                                 v-model="horse.boxID"
-                                :options="boxes"
+                                :options="availableBoxesForUpdate(horse)"
                                 value-field="id"
                                 text-field="id"
                         ></b-form-select>
@@ -172,16 +172,16 @@
         },
         data: function () {
             return {
-                horses : [],
-                edit : -1,
+                horses: [],
+                edit: -1,
                 savedHorse: undefined,
-                addMode : false,
+                addMode: false,
                 newHorse: undefined
             }
         },
         computed: {
             insertEnabled: function () {
-                return this.newHorse.name !== '' && this.newHorse.ownerID > 0;
+                return this.newHorse.name !== '' && this.newHorse.ownerID > 0 && this.newHorse.boxID > 0;
             },
             updateEnabled: function () {
                 if (this.savedHorse === undefined) {
@@ -192,6 +192,13 @@
                     || horse.ownerID !== this.savedHorse.ownerID
                     || horse.boxID !== this.savedHorse.boxID
                     ;
+            },
+            availableBoxesForInsert: function () {
+                let availableBoxes = [...this.boxes]
+                this.horses.forEach(horse =>
+                    availableBoxes.splice(availableBoxes.findIndex(box => box.id === horse.boxID), 1)
+                );
+                return availableBoxes;
             }
         },
         methods: {
@@ -286,7 +293,7 @@
                     id: 0,
                     name: "",
                     ownerID: this.owners[0] !== undefined ? this.owners[0].id : 0,
-                    boxID: this.boxes[0] !== undefined ? this.boxes[0].id : 0,
+                    boxID: this.availableBoxesForInsert[0] !== undefined ? this.availableBoxesForInsert[0].id : 0,
                     ownerFullName: "",
                     medicEntryIDs: []
                 };
@@ -295,7 +302,18 @@
             unsetAddMode: function () {
                 this.addMode = false;
                 this.newHorse = undefined;
-            }
+            },
+            availableBoxesForUpdate: function (editedHorse) {
+                let availableBoxes = [...this.boxes]
+                this.horses.forEach(horse =>
+                    availableBoxes.splice(
+                        availableBoxes.findIndex(
+                            box => box.id === horse.boxID && editedHorse.id !== horse.id
+                        )
+                        , 1)
+                );
+                return availableBoxes;
+            },
         }
     }
 </script>
