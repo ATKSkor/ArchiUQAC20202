@@ -17,16 +17,26 @@
         <b-nav-item v-on:click="logout" v-else>Logout</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
-    <router-view class="container" v-bind:rights="rights" v-bind:states="states" v-on:login="login">
+    <router-view
+            class="container"
+            v-bind:base-url="baseUrl"
+            v-bind:rights="rights"
+            v-bind:states="states"
+            v-bind:owners="owners"
+            v-bind:boxes="boxes"
+            v-on:error="handleError"
+            v-on:refresh-owner="getOwners"
+            v-on:refresh-box="getBoxes"
+            v-on:login="login">
     </router-view>
     <b-toast id="error_toast" variant="danger" solid toaster="b-toaster-top-center">
       <template v-slot:toast-title>
         <div class="d-flex flex-grow-1 align-items-baseline">
           <b-img blank blank-color="#ff5555" class="mr-2 rounded" width="12" height="12" ></b-img>
-          <strong class="mr-auto">{{ toast.title }}</strong>
+          <strong class="mr-auto toast-text">{{ toast.title }}</strong>
         </div>
       </template>
-      {{ toast.body }}
+      <div class="toast-text">{{ toast.body }}</div>
     </b-toast>
   </div>
 </template>
@@ -59,7 +69,11 @@
         toast : {
           title : '',
           body  : ''
-        }
+        },
+        owners : [
+        ],
+        boxes : [
+        ]
       }
     },
     methods : {
@@ -73,7 +87,7 @@
                   that.states.login.error = false;
                 })
                 .catch(error => {
-                  that.handleError("Error during login", error);
+                  that.handleError({ title: "Error during login", error: error });
                   that.states.login.running = false;
                   that.states.login.error = true;
                 })
@@ -84,7 +98,7 @@
                 .then(function (response) {
                   that.rights = response.data;
                 }).catch(error => {
-          that.handleError("Error while retrieving user rights", error)
+          that.handleError({ title: "Error while retrieving user rights", error: error })
           that.states.login.running = false;
           that.states.login.error = true;
           that.rights.isConnected = false;
@@ -102,23 +116,42 @@
                   };
                   that.$router.push('/home');
                 }).catch(error => {
-          that.handleError("Error while logging out", error)
+          that.handleError({ title: "Error while logging out", error: error })
           that.rights.isConnected = false;
           that.getRights();
         })
       },
-      handleError : function (title, error) {
-        console.error(error);
-        this.toast.title = title;
-        if (error.response !== undefined && error.response.status !== undefined) {
-          this.toast.body = "(http " + error.response.status + ") ";
+      getOwners: function() {
+        this.owners = [
+          { id: 4, name: "Doe", surname : "John" },
+          { id: 3, name: "Martin", surname : "Pierre" },
+          { id: 2, name: "Muller", surname : "Hans" },
+          { id: 1, name: "West", surname : "Malik" },
+          { id: 9, name: "Owner", surname: "StarPony"}
+        ];
+        this.owners.forEach((owner) => { owner.fullname = owner.name + " " + owner.surname})
+      },
+      getBoxes: function() {
+        let that = this;
+        axios.get(this.baseUrl + '/box', { withCredentials: true })
+                .then(function (response) {
+                  that.boxes = response.data;
+                }).catch(error => {
+          that.handleError({ title: "Error while retrieving box list", error: error })
+        })
+      },
+      handleError : function (errorData) {
+        console.error(errorData.error);
+        this.toast.title = errorData.title;
+        if (errorData.error.response !== undefined && errorData.error.response.status !== undefined) {
+          this.toast.body = "(http " + errorData.error.response.status + ") ";
         } else {
           this.toast.body = "(Status unknown) ";
         }
-        if (error.response !== undefined && error.response.data !== undefined) {
-          this.toast.body += error.response.data;
-        } else if (error.message !== undefined) {
-          this.toast.body += error.message;
+        if (errorData.error.response !== undefined && errorData.error.response.data !== undefined) {
+          this.toast.body += errorData.error.response.data;
+        } else if (errorData.error.message !== undefined) {
+          this.toast.body += errorData.error.message;
         } else {
           this.toast += 'Unspecified error';
         }
@@ -130,6 +163,12 @@
 
 <style lang="scss">
   @import url('https://fonts.googleapis.com/css?family=Roboto');
+  * {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .toast-text {
+    color: rgba(0, 0, 0, 0.8);
+  }
   body {
     background-color: #343a40 !important;
     font-family: 'roboto', sans-serif;

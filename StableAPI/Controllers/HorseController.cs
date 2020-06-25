@@ -66,6 +66,7 @@ namespace StableAPI.Controllers
             var horse = new Horse
             {
                 Name = horseDto.Name,
+                BoxID = horseDto.BoxID,
                 OwnerID = horseDto.OwnerID
             };
 
@@ -93,6 +94,7 @@ namespace StableAPI.Controllers
             }
 
             horse.Name = horseDto.Name;
+            horse.BoxID = horseDto.BoxID;
             horse.OwnerID = horseDto.OwnerID;
 
             await _context.SaveChangesAsync();

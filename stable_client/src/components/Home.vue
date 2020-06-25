@@ -61,25 +61,25 @@
                         <span>Admin</span>
                     </b-btn>
                 </b-col>
-                <b-col class="p-2" cols="12" sm="6" lg="4" v-if="rights.isAdmin || rights.isGroom">
+                <b-col class="p-2" cols="12" sm="6" lg="4">
                     <b-btn to="/horse" class="w-100 huge-btn">
                         <font-awesome-icon icon="horse"></font-awesome-icon><br>
                         <span>Horse</span>
                     </b-btn>
                 </b-col>
-                <b-col class="p-2" cols="12" sm="6" lg="4" v-if="rights.isAdmin || rights.isGroom">
+                <b-col class="p-2" cols="12" sm="6" lg="4" v-if="rights.isAdmin || rights.isSecretary">
                     <b-btn to="/equipment" class="w-100 huge-btn">
                         <font-awesome-icon icon="boxes"></font-awesome-icon><br>
                         <span>Equipment</span>
                     </b-btn>
                 </b-col>
-                <b-col class="p-2" cols="12" sm="6" lg="4" v-if="rights.isAdmin || rights.isGroom || rights.isSecretary">
+                <b-col class="p-2" cols="12" sm="6" lg="4">
                     <b-btn to="/event" class="w-100 huge-btn">
                         <font-awesome-icon icon="calendar-alt"></font-awesome-icon><br>
                         <span>Event</span>
                     </b-btn>
                 </b-col>
-                <b-col class="p-2" cols="12" sm="6" lg="4" v-if="rights.isAdmin || rights.isGroom || rights.isSecretary">
+                <b-col class="p-2" cols="12" sm="6" lg="4">
                     <b-btn to="/member" class="w-100 huge-btn">
                         <font-awesome-icon icon="users"></font-awesome-icon><br>
                         <span>Member</span>
@@ -112,9 +112,6 @@
 </script>
 
 <style lang="scss" scoped>
-    * {
-        color: rgba(255, 255, 255, 0.8);
-    }
     .rounded-top-left {
         border-top-left-radius: .25rem !important;
     }
