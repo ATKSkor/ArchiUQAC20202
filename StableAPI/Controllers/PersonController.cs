@@ -129,7 +129,6 @@ namespace StableAPI.Controllers
 
             if (person.Horses != null)
             {
-                Console.WriteLine(person.Horses.Count);
                 foreach (var horse in person.Horses)
                 {
                     var tmpHorse = await _context.Horses
