@@ -215,6 +215,9 @@
                 if (this.addMode) {
                     this.unsetAddMode();
                 }
+                if (this.edit !== -1) {
+                    this.exitEdit(true);
+                }
                 let toSaveHorse = this.horses.find(horse => horse.id === id);
                 this.savedHorse = {
                     boxID: toSaveHorse.boxID,
@@ -259,11 +262,10 @@
                     return;
                 }
                 let that = this
-                let horse = this.newHorse;
                 let insertData = {
-                    name: horse.name,
-                    boxID: horse.boxID,
-                    ownerId: horse.ownerID
+                    name: this.newHorse.name,
+                    boxID: this.newHorse.boxID,
+                    ownerId: this.newHorse.ownerID
                 };
                 axios.post(this.baseUrl + '/horse/', insertData, { withCredentials: true })
                     .then(() => {
