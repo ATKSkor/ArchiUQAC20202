@@ -63,6 +63,28 @@ namespace StableAPI.Controllers
             return stockEntry;
         }
 
+        [HttpPost("{stableId}/{itemId}")]
+        public async Task<IActionResult> UpdateStockEntry(int stableId, int itemId, StockEntryDto stockEntryDto)
+        {
+            if (stockEntryDto.Quantity < 0)
+            {
+                return BadRequest();
+            }
+
+            var stockEntry = await _context.StockEntries.FindAsync(stableId, itemId);
+
+            if (stockEntry == null)
+            {
+                return NotFound();
+            }
+
+            stockEntry.Quantity = stockEntryDto.Quantity;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateStockEntry(StockEntry stockEntry)
         {
