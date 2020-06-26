@@ -149,7 +149,12 @@
           this.toast.body = "(Status unknown) ";
         }
         if (errorData.error.response !== undefined && errorData.error.response.data !== undefined) {
-          this.toast.body += errorData.error.response.data;
+          if (errorData.error.response.data.title !== undefined) {
+            this.toast.body += errorData.error.response.data.title;
+          } else {
+            this.toast.body += errorData.error.response.data;
+          }
+
         } else if (errorData.error.message !== undefined) {
           this.toast.body += errorData.error.message;
         } else {
