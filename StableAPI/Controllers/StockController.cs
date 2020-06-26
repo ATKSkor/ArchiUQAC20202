@@ -135,6 +135,7 @@ namespace StableAPI.Controllers
                 {
                     return BadRequest("There already exists such an entry");
                 }
+                stockEntry.Item = item;
             }
             else if(stockEntry.Item.ItemName == null || stockEntry.Item.ItemName == "" )
             {
