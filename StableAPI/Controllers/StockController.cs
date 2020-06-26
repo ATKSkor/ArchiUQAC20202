@@ -63,6 +63,54 @@ namespace StableAPI.Controllers
             return stockEntry;
         }
 
+        [HttpGet("items")]
+        public async Task<ActionResult<IEnumerable<StockItemDto>>> GetItemTypes()
+        {
+            var stockItem = await _context.StockItems
+                .Select(si => ToStockItemDto(si))
+                .ToListAsync();
+
+            return stockItem;
+        }
+
+        [HttpDelete("items/{id}")]
+        public async Task<IActionResult> DeleteItemType(int id)
+        {
+            var stockItem = await _context.StockItems.FindAsync(id);
+
+            if (stockItem == null)
+            {
+                return NotFound();
+            }
+
+            _context.StockItems.Remove(stockItem);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost("{stableId}/{itemId}")]
+        public async Task<IActionResult> UpdateStockEntry(int stableId, int itemId, StockEntryDto stockEntryDto)
+        {
+            if (stockEntryDto.Quantity < 0)
+            {
+                return BadRequest();
+            }
+
+            var stockEntry = await _context.StockEntries.FindAsync(stableId, itemId);
+
+            if (stockEntry == null)
+            {
+                return NotFound();
+            }
+
+            stockEntry.Quantity = stockEntryDto.Quantity;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateStockEntry(StockEntry stockEntry)
         {
@@ -87,6 +135,11 @@ namespace StableAPI.Controllers
                 {
                     return BadRequest("There already exists such an entry");
                 }
+                stockEntry.Item = item;
+            }
+            else if(stockEntry.Item.ItemName == null || stockEntry.Item.ItemName == "" )
+            {
+                 return BadRequest("Empty item name not allowed");
             }
 
             await _context.StockEntries.AddAsync(stockEntry);
@@ -176,6 +229,15 @@ namespace StableAPI.Controllers
                 StockItemId = stockEntry.ItemID,
                 ItemName = stockEntry.Item.ItemName,
                 Quantity = stockEntry.Quantity
+            };
+        }
+
+        private static StockItemDto ToStockItemDto(StockItem stockItem)
+        {
+            return new StockItemDto
+            {
+                ID = stockItem.ID,
+                ItemName = stockItem.ItemName
             };
         }
 
