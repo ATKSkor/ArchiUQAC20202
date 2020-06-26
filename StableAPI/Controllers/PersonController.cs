@@ -37,7 +37,6 @@ namespace StableAPI.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles ="secretary, admin")]
-
         public async Task<ActionResult<SinglePersonDto>> GetPerson(int id)
         {
             var person = await _context.Persons
@@ -78,7 +77,7 @@ namespace StableAPI.Controllers
 
         [HttpPost("{id}")]
         [Authorize(Roles = "secretary, admin")]
-        public async Task<IActionResult> UpdatePerson(int id, PersonDto personDto)
+        public async Task<IActionResult> UpdatePerson(int id, SinglePersonDto personDto)
         {
             if (personDto.Name == null || personDto.Surname == null)
             {
@@ -95,6 +94,8 @@ namespace StableAPI.Controllers
 
             person.Name = personDto.Name;
             person.Surname = personDto.Surname;
+            person.Horses = personDto.Horses;
+            person.Memberships = personDto.Memberships;
 
             await _context.SaveChangesAsync();
 

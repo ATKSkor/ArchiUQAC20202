@@ -9,7 +9,7 @@ namespace StableAPI.Models.Dto
         public string Name { get; set; }
         public string Surname { get; set; }
 
-        public virtual ICollection<int> HorsesIDs { get; set; }
+        public ICollection<int> HorsesIDs { get; set; }
         public ICollection<int> MembershipsIDs { get; set; }
     }
 }
