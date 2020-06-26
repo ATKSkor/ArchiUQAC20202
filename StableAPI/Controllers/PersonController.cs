@@ -12,7 +12,7 @@ using StableAPI.Models.Dto;
 
 namespace StableAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class PersonController : ControllerBase
     {
@@ -28,8 +28,6 @@ namespace StableAPI.Controllers
         public async Task<ActionResult<IEnumerable<PersonDto>>> GetPersons()
         {
             return await _context.Persons
-                .Include(h => h.Name)
-                .Include(h => h.Surname)
                 .Include(h => h.Horses)
                 .Select(h => PersonToDo(h))
                 .ToListAsync();
@@ -41,8 +39,6 @@ namespace StableAPI.Controllers
         {
             var person = await _context.Persons
                 .Where(h => h.ID == id)
-                .Include(h => h.Name)
-                .Include(h => h.Surname)
                 .Include(h => h.Horses)
                 .FirstOrDefaultAsync();
 
@@ -94,8 +90,25 @@ namespace StableAPI.Controllers
 
             person.Name = personDto.Name;
             person.Surname = personDto.Surname;
-            person.Horses = personDto.Horses;
-            person.Memberships = personDto.Memberships;
+            if (personDto.Horses != null)
+            {
+                var listHorse = new List<Horse>();
+                foreach (var horse in personDto.Horses)
+                {
+                    var tmpHorse = new Horse
+                    {
+                        ID = horse.ID,
+                        BoxID = horse.BoxID,
+                        OwnerID = horse.OwnerID,
+                        Owner = person,
+                        Name = horse.Name,
+                        MedicEntries = horse.MedicEntries
+                    };
+
+                    listHorse.Add(tmpHorse);
+                }
+                person.Horses = listHorse;
+            }
 
             await _context.SaveChangesAsync();
 
@@ -112,6 +125,23 @@ namespace StableAPI.Controllers
             if (person == null)
             {
                 return NotFound();
+            }
+
+            if (person.Horses != null)
+            {
+                Console.WriteLine(person.Horses.Count);
+                foreach (var horse in person.Horses)
+                {
+                    var tmpHorse = await _context.Horses
+                    .FindAsync(horse.ID);
+
+                    if (tmpHorse == null)
+                    {
+                        return NotFound();
+                    }
+
+                    _context.Horses.Remove(tmpHorse);
+                }               
             }
 
             _context.Persons.Remove(person);
@@ -156,10 +186,22 @@ namespace StableAPI.Controllers
                 ID = person.ID,
                 Name = person.Name,
                 Surname = person.Surname,
-                Horses = person.Horses,
-                Memberships = person.Memberships
+                Horses = new List<SingleHorseDto>()
             };
 
+            foreach (var horse in person.Horses)
+            {
+                var tmpHorse = new SingleHorseDto
+                {
+                    ID = horse.ID,
+                    BoxID = horse.BoxID,
+                    OwnerID = horse.OwnerID,
+                    OwnerFullName = new string(horse.Owner.Name + " " + horse.Owner.Surname),
+                    Name = horse.Name,
+                    MedicEntries = horse.MedicEntries
+                };
+                ret.Horses.Add(tmpHorse);
+            }
             return ret;
         }
     }
