@@ -63,6 +63,16 @@ namespace StableAPI.Controllers
             return stockEntry;
         }
 
+        [HttpGet("items")]
+        public async Task<ActionResult<IEnumerable<StockItemDto>>> GetItemTypes()
+        {
+            var stockItem = await _context.StockItems
+                .Select(si => ToStockItemDto(si))
+                .ToListAsync();
+
+            return stockItem;
+        }
+
         [HttpPost("{stableId}/{itemId}")]
         public async Task<IActionResult> UpdateStockEntry(int stableId, int itemId, StockEntryDto stockEntryDto)
         {
@@ -198,6 +208,15 @@ namespace StableAPI.Controllers
                 StockItemId = stockEntry.ItemID,
                 ItemName = stockEntry.Item.ItemName,
                 Quantity = stockEntry.Quantity
+            };
+        }
+
+        private static StockItemDto ToStockItemDto(StockItem stockItem)
+        {
+            return new StockItemDto
+            {
+                ID = stockItem.ID,
+                ItemName = stockItem.ItemName
             };
         }
 
