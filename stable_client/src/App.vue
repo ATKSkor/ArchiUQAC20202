@@ -5,10 +5,10 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item to="/home">Home</b-nav-item>
-          <b-nav-item v-if="rights.isAdmin || rights.isGroom || rights.isSecretary" to="/event">Event</b-nav-item>
-          <b-nav-item v-if="rights.isAdmin || rights.isGroom || rights.isSecretary" to="/member">Member</b-nav-item>
-          <b-nav-item v-if="rights.isAdmin || rights.isGroom" to="/horse">Horse</b-nav-item>
-          <b-nav-item v-if="rights.isAdmin || rights.isGroom" to="/equipment">Equipment</b-nav-item>
+          <b-nav-item v-if="rights.isConnected" to="/event">Event</b-nav-item>
+          <b-nav-item v-if="rights.isConnected" to="/member">Member</b-nav-item>
+          <b-nav-item v-if="rights.isConnected" to="/horse">Horse</b-nav-item>
+          <b-nav-item v-if="rights.isAdmin || rights.isSecretary" to="/equipment">Equipment</b-nav-item>
           <b-nav-item v-if="rights.isAdmin" to="/admin">Admin</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
@@ -149,7 +149,12 @@
           this.toast.body = "(Status unknown) ";
         }
         if (errorData.error.response !== undefined && errorData.error.response.data !== undefined) {
-          this.toast.body += errorData.error.response.data;
+          if (errorData.error.response.data.title !== undefined) {
+            this.toast.body += errorData.error.response.data.title;
+          } else {
+            this.toast.body += errorData.error.response.data;
+          }
+
         } else if (errorData.error.message !== undefined) {
           this.toast.body += errorData.error.message;
         } else {
