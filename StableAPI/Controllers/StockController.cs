@@ -136,6 +136,10 @@ namespace StableAPI.Controllers
                     return BadRequest("There already exists such an entry");
                 }
             }
+            else if(stockEntry.Item.ItemName == null || stockEntry.Item.ItemName == "" )
+            {
+                 return BadRequest("Empty item name not allowed");
+            }
 
             await _context.StockEntries.AddAsync(stockEntry);
             await _context.SaveChangesAsync();
