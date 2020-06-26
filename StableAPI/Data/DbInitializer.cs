@@ -131,6 +131,32 @@ namespace StableAPI.Data
             }
 
             context.SaveChanges();
+
+            var eventTypes = new EventType[]
+            {
+                new EventType {Label = "Practice"},
+                new EventType {Label = "Race"},
+                new EventType {Label = "Meeting"},
+                new EventType {Label = "Free"}
+            };
+            foreach (var eventType in eventTypes)
+            {
+                context.EventTypes.Add(eventType);
+            }
+
+            context.SaveChanges();
+
+            var calendars = new Calendar[]
+            {
+                new Calendar {Name = "Staff Planning", StableID = 1},
+                new Calendar {Name = "Public events", StableID = 1}
+            };
+            foreach (var calendar in calendars)
+            {
+                context.Calendars.Add(calendar);
+            }
+
+            context.SaveChanges();
         }
 
         private static void AddMedicEntry(StableContext context)
