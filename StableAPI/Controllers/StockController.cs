@@ -73,6 +73,22 @@ namespace StableAPI.Controllers
             return stockItem;
         }
 
+        [HttpDelete("items/{id}")]
+        public async Task<IActionResult> DeleteItemType(int id)
+        {
+            var stockItem = await _context.StockItems.FindAsync(id);
+
+            if (stockItem == null)
+            {
+                return NotFound();
+            }
+
+            _context.StockItems.Remove(stockItem);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [HttpPost("{stableId}/{itemId}")]
         public async Task<IActionResult> UpdateStockEntry(int stableId, int itemId, StockEntryDto stockEntryDto)
         {
