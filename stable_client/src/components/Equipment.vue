@@ -24,11 +24,43 @@
             <b-tbody>
                 <b-tr class="d-flex" v-if="addMode">
                     <b-td class="col-8">
-                        <b-form-input
-                                size="sm"
-                                type="text"
-                                v-model="newItem.itemName"
-                        ></b-form-input>
+                        <div v-if="newType">
+                            <b-form-input
+                                    size="sm"
+                                    type="text"
+                                    v-model="newItem.itemName"
+                                    class="w-75 d-inline-block"
+                            ></b-form-input>
+                            <font-awesome-icon
+                                    class="mx-1"
+                                    icon="times"
+                                    v-on:click="unsetAddNewTypeMode()"
+                            ></font-awesome-icon>
+                        </div>
+
+                        <div v-else>
+                            <b-form-select
+                                    size="sm"
+                                    v-model="newItem.stockItemId"
+                                    :options="availableTypes"
+                                    value-field="id"
+                                    text-field="itemName"
+                                    class="w-75"
+                            ></b-form-select>
+                            <font-awesome-icon
+                                    class="mx-2 plus-hover"
+                                    icon="plus"
+                                    v-on:click="setAddNewTypeMode()"
+                            ></font-awesome-icon>
+                            <font-awesome-icon
+                                    :class="{ disabled: availableTypes[0] === undefined}"
+                                    class="ml-2"
+                                    icon="trash-alt"
+                                    v-on:click="dropType(newItem.stockItemId)"
+                            ></font-awesome-icon>
+                        </div>
+
+
                     </b-td>
                     <b-td class="col-2">
                         <b-form-input
@@ -122,12 +154,15 @@
             rights: Object
         },
         mounted: function() {
-          this.getAll();
+            this.getAll();
+            this.getAllItemTypes();
         },
         data: function () {
             return {
                 items: [],
+                itemTypes: [],
                 newItem: undefined,
+                newType: false,
                 savedItem: undefined,
                 addMode: false
             }
@@ -140,7 +175,16 @@
                         that.items = response.data;
                     }).catch(error => {
                     that.$emit('error', { title : "Error while retrieving item list", error : error })
-                })
+                });
+            },
+            getAllItemTypes: function () {
+                let that = this;
+                axios.get(this.baseUrl + '/stock/items', { withCredentials: true })
+                    .then(function (response) {
+                        that.itemTypes = response.data
+                    }).catch(error => {
+                    that.$emit('error', { title : "Error while retrieving item type list", error : error })
+                });
             },
             editMode: function (idStable, idItem) {
                 if (this.addMode) {
@@ -197,6 +241,7 @@
                 let insertData = {
                     StableID: this.newItem.stableId,
                     Quantity: parseInt(this.newItem.quantity, 10),
+                    ItemID: parseInt(this.newItem.stockItemId, 10),
                     Item : {
                         itemName: this.newItem.itemName
                     }
@@ -204,11 +249,12 @@
                 axios.post(this.baseUrl + '/stock/', insertData, { withCredentials: true })
                     .then(() => {
                         that.getAll();
+                        that.getAllItemTypes();
                         that.unsetAddMode();
                     })
                     .catch(error => {
                         that.$emit('error', { title : "Error while inserting new item entry", error : error });
-                    })
+                    });
             },
             drop: function (droppedItem) {
                 let that = this;
@@ -224,14 +270,27 @@
                         1)
                 }).catch(error => {
                     that.$emit('error', { title : "Error while deleting stock entry", error : error })
-                })
+                });
+            },
+            dropType: function (idType) {
+                if (this.availableTypes[0] === undefined || idType <= 0 ){
+                    return;
+                }
+                let that = this;
+                axios.delete(this.baseUrl + '/stock/items/' + idType, { withCredentials: true })
+                    .then(() => {
+                        this.itemTypes.splice(this.itemTypes.findIndex(type => type.id === idType), 1)
+                        this.newItem.stockItemId = this.availableTypes[0] !== undefined ? this.availableTypes[0].id : 0;
+                    }).catch(error => {
+                    that.$emit('error', {title: "Error while deleting stock entry", error: error})
+                });
             },
             setAddMode: function () {
                 if (this.savedItem !== undefined) {
                     this.exitEdit(true);
                 }
                 this.newItem = {
-                    stockItemId: 0,
+                    stockItemId: this.availableTypes[0] !== undefined ? this.availableTypes[0].id : 0,
                     stableId: 1,
                     itemName: "",
                     quantity: 1
@@ -240,12 +299,36 @@
             },
             unsetAddMode: function () {
                 this.addMode = false;
+                this.newType = false;
                 this.newItem = undefined;
             },
+            setAddNewTypeMode: function () {
+                this.newType = true;
+                this.newItem.stockItemId = 0;
+            },
+            unsetAddNewTypeMode: function () {
+                this.newType = false;
+                this.newItem.itemName = "";
+                this.newItem.stockItemId = this.availableTypes[0] !== undefined ? this.availableTypes[0].id : 0;
+            }
         },
         computed: {
             insertEnabled: function () {
-                return this.newItem !== undefined && this.newItem.itemName !== ''
+                // Checking for already existing type in stock
+                if (this.newItem.itemName !== undefined
+                    && this.items.find(
+                        item => item.itemName.toLocaleLowerCase() === this.newItem.itemName.trim().toLowerCase()
+                    ) !== undefined) {
+                    return false;
+                }
+                // Checking for already existing type out of stock
+                if (this.newItem.itemName !== undefined
+                    && this.availableTypes.find(
+                        item => item.itemName.toLocaleLowerCase() === this.newItem.itemName.trim().toLowerCase()
+                    ) !== undefined) {
+                    return false;
+                }
+                return this.newItem !== undefined && (this.newItem.itemName !== '' || this.newItem.stockItemId !== 0)
                     && this.newItem.quantity >= 0
                     && this.newItem.quantity == parseInt(this.newItem.quantity, 10)
             },
@@ -259,6 +342,16 @@
                 );
                 return item.quantity !== this.savedItem.quantity && item.quantity == parseInt(item.quantity, 10);
             },
+            availableTypes: function () {
+                let availableTypes = [...this.itemTypes]
+                this.items.forEach(item =>
+                    availableTypes.splice(
+                        availableTypes.findIndex(type => type.id === item.stockItemId)
+                        , 1
+                    )
+                );
+                return availableTypes;
+            }
         }
     }
 </script>
@@ -274,7 +367,7 @@
                     }
                 }
             }
-            &.fa-check {
+            &.fa-check, &.plus-hover {
                 &:not(.disabled) {
                     path {
                         color: rgba(40, 167, 69, 0.6)
@@ -293,12 +386,19 @@
 
             }
             &.fa-times, &.fa-trash-alt {
-                path {
-                    color: rgba(220, 53, 69, 0.6);
-                }
-                &:hover {
+                &:not(.disabled) {
                     path {
-                        color: rgba(220, 53, 69, 1);
+                        color: rgba(220, 53, 69, 0.6);
+                    }
+                    &:hover {
+                        path {
+                            color: rgba(220, 53, 69, 1);
+                        }
+                    }
+                }
+                &.disabled {
+                    path {
+                        color: rgba(108, 117, 125, 0.8);
                     }
                 }
             }
