@@ -37,7 +37,6 @@
                                     v-on:click="unsetAddNewTypeMode()"
                             ></font-awesome-icon>
                         </div>
-
                         <div v-else>
                             <b-form-select
                                     size="sm"
@@ -59,8 +58,6 @@
                                     v-on:click="dropType(newItem.stockItemId)"
                             ></font-awesome-icon>
                         </div>
-
-
                     </b-td>
                     <b-td class="col-2">
                         <b-form-input
@@ -254,7 +251,8 @@
                     })
                     .catch(error => {
                         that.$emit('error', { title : "Error while inserting new item entry", error : error });
-                    });
+                    })
+                ;
             },
             drop: function (droppedItem) {
                 let that = this;
@@ -263,7 +261,7 @@
                     { withCredentials: true }
                 ).then(() => {
                     that.exitEdit(false);
-                    this.items.splice(
+                    that.items.splice(
                         this.items.findIndex(
                             item => item.stableId === droppedItem.stableId
                                 && item.stockItemId === droppedItem.stockItemId),
@@ -279,10 +277,10 @@
                 let that = this;
                 axios.delete(this.baseUrl + '/stock/items/' + idType, { withCredentials: true })
                     .then(() => {
-                        this.itemTypes.splice(this.itemTypes.findIndex(type => type.id === idType), 1)
-                        this.newItem.stockItemId = this.availableTypes[0] !== undefined ? this.availableTypes[0].id : 0;
+                        that.itemTypes.splice(that.itemTypes.findIndex(type => type.id === idType), 1)
+                        that.newItem.stockItemId = that.availableTypes[0] !== undefined ? that.availableTypes[0].id : 0;
                     }).catch(error => {
-                    that.$emit('error', {title: "Error while deleting stock entry", error: error})
+                    that.$emit('error', {title: "Error while deleting item type", error: error})
                 });
             },
             setAddMode: function () {

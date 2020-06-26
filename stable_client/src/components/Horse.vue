@@ -1,5 +1,5 @@
 <template>
-    <b-container class="pt-2">
+    <b-container class="pt-2" v-if="rights.isConnected">
         <h2 class="pb-3 text-center">Horse Management</h2>
         <b-table-simple class="table" table-variant="dark" hover small responsive="sm">
             <b-thead head-variant="dark">
@@ -19,10 +19,7 @@
                     </b-th>
                     <b-th class="col-3 text-center">Medic Entries</b-th>
                     <b-th class="col-2" v-if="rights.isGroom || rights.isAdmin">
-                        <b-btn size="sm" variant="success"
-                               v-if="!addMode || edit !== -1"
-                               v-on:click="setAddMode()"
-                        >
+                        <b-btn size="sm" variant="success" v-if="!addMode || edit !== -1" v-on:click="setAddMode()">
                             <font-awesome-icon class="mx-2" icon="plus"></font-awesome-icon>
                             New
                         </b-btn>
@@ -147,6 +144,9 @@
             </b-tbody>
         </b-table-simple>
         <h4 class="text-center" v-if="horses === undefined || horses.length === 0">No horse found</h4>
+    </b-container>
+    <b-container class="pt-2" v-else>
+        <em class="d-block mx-auto pb-3 text-center">401 Unauthorized - Access can not be granted</em>
     </b-container>
 </template>
 
