@@ -40,6 +40,15 @@ namespace StableAPI.Controllers
             return PlanningController.ToEventDto(e);
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<EventDto>>> GetEvents()
+        {
+            return await _context.Events
+                .Include(e => e.EventType)
+                .Select(e => PlanningController.ToEventDto(e))
+                .ToListAsync();
+        }
+
         [HttpGet("types")]
         public async Task<ActionResult<IEnumerable<EventType>>> GetTypes()
         {
@@ -61,6 +70,15 @@ namespace StableAPI.Controllers
             if (newEvent.StartDate > newEvent.EndDate)
             {
                 return BadRequest("Event cannot end before it started");
+            }
+
+            if (newEvent.EventTypeID == 0 && newEvent.EventType.ID != 0)
+            {
+                newEvent.EventTypeID = newEvent.EventType.ID;
+            } else if (newEvent.EventTypeID == 0 && newEvent.EventType.ID == 0 && newEvent.EventType.Label != "")
+            {
+                await _context.EventTypes.AddAsync(newEvent.EventType);
+                await _context.SaveChangesAsync();
             }
 
             await _context.Events.AddAsync(newEvent);
@@ -100,5 +118,21 @@ namespace StableAPI.Controllers
 
             return Ok();
         }
+
+        [HttpDelete("types/{id}")]
+        [Authorize(Roles = "admin, secretary")]
+        public async Task<IActionResult> DeleteEventType(int id)
+        {
+            var t = await _context.EventTypes
+                .FindAsync(id);
+
+            _context.EventTypes.Remove(t);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
+
+
 }

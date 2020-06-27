@@ -171,6 +171,9 @@
   * {
     color: rgba(255, 255, 255, 0.8);
   }
+  .text-dark {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
   .toast-text {
     color: rgba(0, 0, 0, 0.8);
   }
@@ -182,5 +185,41 @@
     &.router-link-active {
       border-bottom: 1px solid;
     }
+  }
+  .form-control, .custom-select {
+    bdi, .b-calendar-grid-caption {
+      color: #495057 !important;
+    }
+    .b-calendar-grid-weekdays {
+      small {
+        color: #495057 !important;
+      }
+    }
+    &:not(.col.p-0) {
+      background-color: rgba(52, 58, 64, 0.8) !important;
+      border-color: #454d55 !important;
+      color: rgba(255, 255, 255, 0.8) !important;
+    }
+    label {
+      color: rgba(255, 255, 255, 0.8) !important;
+    }
+  }
+  .bi-chevron-up, .bi-chevron-down, .b-form-time-control div div .bi-circle-fill {
+    color: rgba(52, 58, 64, 0.8) !important;
+    fill: rgba(52, 58, 64, 0.8) !important;
+  }
+  .btn {
+    &.btn-sm {
+      &.h-auto {
+        font-size: 1px !important;
+        max-width: 1px;
+        width: 1px;
+        padding-left: 1px;
+        svg {
+          display: none;
+        }
+      }
+    }
+
   }
 </style>

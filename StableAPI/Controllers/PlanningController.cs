@@ -102,7 +102,11 @@ namespace StableAPI.Controllers
             {
                 ID = e.ID,
                 Title = e.Title,
-                EventType = e.EventType.Label,
+                EventType = new EventType
+                {
+                    ID = e.EventType.ID,
+                    Label = e.EventType.Label
+                },
                 StartDate = e.StartDate,
                 EndDate = e.EndDate
             };
