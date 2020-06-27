@@ -11,7 +11,6 @@ namespace StableAPI.Models.Dto
         public string Name { get; set; }
         public string Surname { get; set; }
 
-        public ICollection<Horse> Horses { get; set; }
-        public ICollection<Membership> Memberships { get; set; }
+        public ICollection<SingleHorseDto> Horses { get; set; }
     }
 }
