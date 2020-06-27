@@ -8,6 +8,6 @@ namespace StableAPI.Models.Dto
         public string Title { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string EventType { get; set; }
+        public EventType EventType { get; set; }
     }
 }
