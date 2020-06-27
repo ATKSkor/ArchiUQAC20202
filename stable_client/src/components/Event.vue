@@ -61,6 +61,7 @@
                     <b-td class="col-3 px-0">
                         <b-form-datepicker
                                 dark
+                                hide-header
                                 size="sm"
                                 :min="minDate"
                                 :max="maxDate"
@@ -82,6 +83,7 @@
                         <b-form-datepicker
                                 dark
                                 size="sm"
+                                hide-header
                                 :min="minDate"
                                 :max="maxDate"
                                 v-on:input="computedDates()"
@@ -135,6 +137,7 @@
                         <b-form-datepicker
                                 dark
                                 size="sm"
+                                hide-header
                                 :min="minDate"
                                 :max="maxDate"
                                 v-on:input="computedDates()"
@@ -154,25 +157,26 @@
                     <b-td class="col-4 text-center" v-if="edit !== event.id">
                         <span>{{ new Date(event.endDate).toString().substr(0,21) }}</span>
                     </b-td>
-                        <b-td class="col-3 px-0" v-if="edit === event.id">
-                            <b-form-datepicker
-                                    dark
-                                    size="sm"
-                                    :min="minDate"
-                                    :max="maxDate"
-                                    v-on:input="computedDates()"
-                                    v-model="event.date.endDate"
-                            ></b-form-datepicker>
-                        </b-td>
-                        <b-td class="col-1 px-0" v-if="edit === event.id">
-                            <b-form-timepicker
-                                    no-close-button
-                                    hide-header
-                                    size="sm"
-                                    v-on:input="computedDates()"
-                                    v-model="event.date.endTime"
-                            ></b-form-timepicker>
-                        </b-td>
+                    <b-td class="col-3 px-0" v-if="edit === event.id">
+                        <b-form-datepicker
+                                dark
+                                size="sm"
+                                hide-header
+                                :min="minDate"
+                                :max="maxDate"
+                                v-on:input="computedDates()"
+                                v-model="event.date.endDate"
+                        ></b-form-datepicker>
+                    </b-td>
+                    <b-td class="col-1 px-0" v-if="edit === event.id">
+                        <b-form-timepicker
+                                no-close-button
+                                hide-header
+                                size="sm"
+                                v-on:input="computedDates()"
+                                v-model="event.date.endTime"
+                        ></b-form-timepicker>
+                    </b-td>
                     <b-td v-if="rights.isSecretary || rights.isAdmin" class="col-1">
                         <font-awesome-icon
                                 v-if="edit !== event.id"
@@ -209,7 +213,7 @@
 </template>
 
 <script>
-    // TODO import axios from "axios"
+    import axios from "axios"
 
     export default {
         name: "Event",
@@ -234,60 +238,58 @@
         },
         methods: {
             getAll: function () {
-                // TODO
-                // let that = this;
-                // axios.get(this.baseUrl + '/calendar', { withCredentials: true })
-                //     .then(function (response) {
-                //         that.items = response.data;
-                //     }).catch(error => {
-                //     that.$emit('error', { title : "Error while retrieving event list", error : error })
-                // });
-                this.events = [
-                    {
-                        id: 1,
-                        startDate: '2020-06-29T17:00:00',
-                        endDate: '2020-06-29T20:00:00',
-                        calendarID: 1,
-                        eventType: {
-                            id: 1,
-                            label: 'Training'
-                        }
-                    },
-                    {
-                        id: 2,
-                        startDate: '2020-06-29T20:00:00',
-                        endDate: '2020-06-29T23:00:00',
-                        calendarID: 1,
-                        eventType: {
-                            id: 2,
-                            label: 'Show'
-                        }
-                    }
-                ]
+                let that = this;
+                axios.get(this.baseUrl + '/event', { withCredentials: true })
+                    .then(function (response) {
+                        that.events = response.data;
+                    }).catch(error => {
+                    that.$emit('error', { title : "Error while retrieving event list", error : error })
+                });
+                // this.events = [
+                //     {
+                //         id: 1,
+                //         startDate: '2020-06-29T17:00:00',
+                //         endDate: '2020-06-29T20:00:00',
+                //         calendarId: 1,
+                //         eventType: {
+                //             id: 1,
+                //             label: 'Training'
+                //         }
+                //     },
+                //     {
+                //         id: 2,
+                //         startDate: '2020-06-29T20:00:00',
+                //         endDate: '2020-06-29T23:00:00',
+                //         calendarId: 1,
+                //         eventType: {
+                //             id: 2,
+                //             label: 'Show'
+                //         }
+                //     }
+                // ]
             },
             getAllEventTypes: function () {
-                // TODO
-                // let that = this;
-                // axios.get(this.baseUrl + '/calendar/types', { withCredentials: true })
-                //     .then(function (response) {
-                //         that.eventTypes = response.data
-                //     }).catch(error => {
-                //     that.$emit('error', { title : "Error while retrieving event type list", error : error })
-                // });
-                this.eventTypes = [
-                    {
-                        id: 1,
-                        label: 'Training'
-                    },
-                    {
-                        id: 2,
-                        label: 'Show'
-                    },
-                    {
-                        id: 3,
-                        label: 'Private Session'
-                    }
-                ]
+                let that = this;
+                axios.get(this.baseUrl + '/event/types', { withCredentials: true })
+                    .then(function (response) {
+                        that.eventTypes = response.data
+                    }).catch(error => {
+                    that.$emit('error', { title : "Error while retrieving event type list", error : error })
+                });
+                // this.eventTypes = [
+                //     {
+                //         id: 1,
+                //         label: 'Training'
+                //     },
+                //     {
+                //         id: 2,
+                //         label: 'Show'
+                //     },
+                //     {
+                //         id: 3,
+                //         label: 'Private Session'
+                //     }
+                // ]
             },
             editMode: function (idEvent) {
                 if (this.addMode) {
@@ -301,7 +303,7 @@
                     id: idEvent,
                     startDate: toSaveEvent.startDate,
                     endDate: toSaveEvent.endDate,
-                    calendarID: toSaveEvent.calendarID,
+                    calendarId: toSaveEvent.calendarId,
                     eventType: {
                         id: toSaveEvent.eventType.id,
                         label: toSaveEvent.eventType.label
@@ -316,9 +318,12 @@
                 this.edit = idEvent;
             },
             exitEdit: function (rollback) {
+                let index = this.events.findIndex(event => event.id === this.savedEvent.id);
                 if (rollback) {
-                    let index = this.events.findIndex(event => event.id === this.savedEvent.id);
                     this.events[index] = this.savedEvent;
+                } else {
+                    this.events[index].eventType.label =
+                        this.eventTypes.find(t => t.id === this.events[index].eventType.id).label;
                 }
                 this.savedEvent = undefined;
                 this.edit = -1;
@@ -327,88 +332,93 @@
                 if (!this.updateEnabled) {
                     return;
                 }
-                // TODO
-                // let that = this;
-                // let updateData = {
-                //     startDate: event.startDate,
-                //     endDate: event.endDate,
-                //     calendarID: event.calendarID,
-                //     eventType: event.eventType
-                // };
-                // axios.post(this.baseUrl + '/calendar/' + event.id, updateData,{ withCredentials: true })
-                //     .then(() => { that.exitEdit(false); })
-                //     .catch(error => {
-                //         that.$emit('error', { title : "Error while updating event", error : error });
-                //     })
-                // ;
-                let index = this.events.findIndex(e => e.id === event.id);
-                this.events[index] = event;
-                this.exitEdit(false);
+                let that = this;
+                let updateData = {
+                    startDate: event.startDate,
+                    endDate: event.endDate,
+                    calendarId: event.calendarId,
+                    eventTypeId: event.eventType.id
+                };
+                axios.post(this.baseUrl + '/event/' + event.id, updateData,{ withCredentials: true })
+                    .then(() => { that.exitEdit(false); })
+                    .catch(error => {
+                        that.$emit('error', { title : "Error while updating event", error : error });
+                    })
+                ;
+                // let index = this.events.findIndex(e => e.id === event.id);
+                // this.events[index] = event;
+                // this.exitEdit(false);
             },
             insert: function() {
                 if (!this.insertEnabled) {
                     return;
                 }
-                // TODO
-                // let that = this;
-                // let insertData = {
-                //     startDate: this.newEvent.startDate,
-                //     endDate: this.newEvent.endDate,
-                //     calendarID: this.newEvent.calendarID,
-                //     eventType: this.newEvent.eventType
-                // }
-                // axios.post(this.baseUrl + '/calendar/', insertData, { withCredentials: true })
-                //     .then(() => {
-                //         that.getAll();
-                //         that.getAllItemTypes();
-                //         that.unsetAddMode();
-                //     })
-                //     .catch(error => {
-                //         that.$emit('error', { title : "Error while inserting new event", error : error });
-                //     })
-                // ;
-                this.events.push(this.newEvent);
-                this.unsetAddMode();
+                let that = this;
+                let insertData;
+                if (this.newEvent.eventType !== undefined && this.newEvent.eventType.id !== 0) {
+                    insertData = {
+                        startDate: this.newEvent.startDate,
+                        endDate: this.newEvent.endDate,
+                        calendarId: this.newEvent.calendarId,
+                        eventTypeID: this.newEvent.eventType.id
+                    }
+                } else {
+                    insertData = {
+                        startDate: this.newEvent.startDate,
+                        endDate: this.newEvent.endDate,
+                        calendarId: this.newEvent.calendarId,
+                        eventType: this.newEvent.eventType
+                    }
+                }
+
+                axios.post(this.baseUrl + '/event/', insertData, { withCredentials: true })
+                    .then(() => {
+                        that.getAll();
+                        that.getAllEventTypes();
+                        that.unsetAddMode();
+                    })
+                    .catch(error => {
+                        that.$emit('error', { title : "Error while inserting new event", error : error });
+                    })
+                ;
+                // this.events.push(this.newEvent);
+                // this.unsetAddMode();
             },
             drop: function (droppedEvent) {
-                // TODO
-                // let that = this;
-                // axios.delete(
-                //     this.baseUrl + '/calendar/' + droppedEvent.id,
-                //     { withCredentials: true }
-                // ).then(() => {
-                //     that.exitEdit(false);
-                //     that.events.splice(
-                //         that.events.findIndex(event => event.id === droppedEvent.id)
-                //         ,1
-                //     )
-                // }).catch(error => {
-                //     that.$emit('error', { title : "Error while deleting event", error : error })
-                // });
-                this.exitEdit(false);
-                this.events.splice(
-                    this.events.findIndex(event => event.id === droppedEvent.id)
-                    ,1
-                )
+                let that = this;
+                axios.delete(this.baseUrl + '/event/' + droppedEvent.id,{ withCredentials: true })
+                    .then(() => {
+                        that.exitEdit(false);
+                        that.events.splice(
+                            that.events.findIndex(event => event.id === droppedEvent.id)
+                            ,1
+                        )
+                    }).catch(error => {
+                    that.$emit('error', { title : "Error while deleting event", error : error })
+                });
+                // this.exitEdit(false);
+                // this.events.splice(
+                //     this.events.findIndex(event => event.id === droppedEvent.id)
+                //     ,1
+                // )
             },
             dropType: function (idType) {
                 if (!this.dropEventTypeEnabled) {
                     return;
                 }
-                // TODO
-                // if (this.eventTypes[0] === undefined || idType <= 0 ){
-                //     return;
-                // }
-                // let that = this;
-                // axios.delete(this.baseUrl + '/stock/items/' + idType, { withCredentials: true })
-                //     .then(() => {
-                //         that.eventTypes.splice(that.eventTypes.findIndex(type => type.id === idType), 1)
-                //         that.newEvent.eventType.id = that.eventTypes[0] !== undefined ? that.eventTypes[0].id : 0;
-                //     }).catch(error => {
-                //     that.$emit('error', {title: "Error while deleting event type", error: error})
-                // });
-                this.eventTypes.splice(this.eventTypes.findIndex(type => type.id === idType), 1)
-                this.newEvent.eventType.id = this.eventTypes[0] !== undefined ? this.eventTypes[0].id : 0;
+                if (this.eventTypes[0] === undefined || idType <= 0 ){
+                    return;
+                }
+                let that = this;
+                axios.delete(this.baseUrl + '/event/types/' + idType, { withCredentials: true })
+                    .then(() => {
+                        that.eventTypes.splice(that.eventTypes.findIndex(type => type.id === idType), 1)
+                        that.newEvent.eventType.id = that.eventTypes[0] !== undefined ? that.eventTypes[0].id : 0;
+                    }).catch(error => {
+                    that.$emit('error', {title: "Error while deleting event type", error: error})
+                });
+                // this.eventTypes.splice(this.eventTypes.findIndex(type => type.id === idType), 1)
+                // this.newEvent.eventType.id = this.eventTypes[0] !== undefined ? this.eventTypes[0].id : 0;
             },
             setAddMode: function () {
                 if (this.edit !== -1) {
@@ -418,7 +428,7 @@
                     id: 0,
                     startDate: (new Date()).toJSON().substr(0,19),
                     endDate: (new Date(Date.now() + 3.6e+6)).toJSON().substr(0,19),
-                    calendarID: 1,
+                    calendarId: 1,
                     eventType: {
                         id: this.eventTypes[0] !== undefined ? this.eventTypes[0].id : 0,
                         label: this.eventTypes[0] !== undefined ? this.eventTypes[0].label : ""
@@ -450,7 +460,7 @@
                 this.newEvent.eventType.id = this.eventTypes[0] !== undefined ? this.eventTypes[0].id : 0;
             },
             computedDates: function () {
-                const event = this.edit === -1 ? this.newEvent : this.events[this.edit];
+                const event = this.edit === -1 ? this.newEvent : this.events.find(e => e.id === this.edit);
                 event.startDate = event.date.startDate + 'T' + event.date.startTime;
                 event.endDate = event.date.endDate + 'T' + event.date.endTime;
             }
