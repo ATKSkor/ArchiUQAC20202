@@ -126,10 +126,10 @@
         axios.get(this.baseUrl + '/person', { withCredentials: true })
                 .then(function (response) {
                   that.owners = response.data;
+                  that.owners.forEach((owner) => { owner.fullname = owner.name + " " + owner.surname})
                 }).catch(error => {
           that.handleError({ title: "Error while retrieving member list", error: error })
         });
-        this.owners.forEach((owner) => { owner.fullname = owner.name + " " + owner.surname})
       },
       getBoxes: function() {
         let that = this;
