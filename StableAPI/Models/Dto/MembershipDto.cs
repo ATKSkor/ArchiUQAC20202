@@ -7,8 +7,8 @@ namespace StableAPI.Models.Dto
 {
     public class MembershipDto
     {
-        public int StableID { get; set; }
-        public int PersonID { get; set; }
+        public int? StableID { get; set; }
+        public int? PersonID { get; set; }
 
         public Stable Stable { get; set; }
         public Person Person { get; set; }

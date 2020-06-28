@@ -12,7 +12,7 @@ using StableAPI.Models.Dto;
 
 namespace StableAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class MembershipController : ControllerBase
     {
@@ -56,7 +56,7 @@ namespace StableAPI.Controllers
         [Authorize(Roles = "secretary, admin")]
         public async Task<IActionResult> CreateMember(MembershipDto memberDto)
         {
-            if (memberDto.Person == null || memberDto.Stable == null)
+            if (memberDto.PersonID == null || memberDto.StableID == null)
             {
                 return BadRequest();
             }
@@ -65,8 +65,7 @@ namespace StableAPI.Controllers
             {
                 Person = memberDto.Person,
                 Stable = memberDto.Stable,
-                StableID = memberDto.StableID,
-                PersonID = memberDto.PersonID
+                StableID = (int) memberDto.StableID,
             };
 
             await _context.Memberships.AddAsync(person);
@@ -79,7 +78,7 @@ namespace StableAPI.Controllers
         [Authorize(Roles = "secretary, admin")]
         public async Task<IActionResult> UpdateMember(int id, SingleMembershipDto memberDto)
         {
-            if (memberDto.Person == null || memberDto.Stable == null)
+            if (memberDto.PersonID == null || memberDto.StableID == null)
             {
                 return BadRequest();
             }
@@ -94,7 +93,7 @@ namespace StableAPI.Controllers
 
             person.Person = memberDto.Person;
             person.Stable = memberDto.Stable;
-            person.StableID = memberDto.StableID;
+            person.StableID = (int) memberDto.StableID;
             person.Bills = memberDto.Bills; 
 
             await _context.SaveChangesAsync();
@@ -107,7 +106,7 @@ namespace StableAPI.Controllers
         public async Task<IActionResult> DeleteMember(int id)
         {
             var person = await _context.Memberships
-                .FindAsync(id);
+                .FindAsync(1, id);
 
             if (person == null)
             {
@@ -159,7 +158,6 @@ namespace StableAPI.Controllers
                 Person = person.Person,
                 Stable = person.Stable,
                 Bills = person.Bills,
-                Registrations = person.Registrations,
                 StableID = person.StableID
             };
 
