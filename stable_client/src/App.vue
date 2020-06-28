@@ -9,7 +9,7 @@
           <b-nav-item v-if="rights.isConnected" to="/member">Member</b-nav-item>
           <b-nav-item v-if="rights.isConnected" to="/horse">Horse</b-nav-item>
           <b-nav-item v-if="rights.isAdmin || rights.isSecretary" to="/equipment">Equipment</b-nav-item>
-          <b-nav-item v-if="rights.isAdmin" to="/admin">Admin</b-nav-item>
+          <b-nav-item v-if="rights.isAdmin" to="/admin" disabled>Admin</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
       <b-navbar-nav class="ml-auto">
@@ -126,10 +126,10 @@
         axios.get(this.baseUrl + '/person', { withCredentials: true })
                 .then(function (response) {
                   that.owners = response.data;
+                  that.owners.forEach((owner) => { owner.fullname = owner.name + " " + owner.surname})
                 }).catch(error => {
           that.handleError({ title: "Error while retrieving member list", error: error })
         });
-        this.owners.forEach((owner) => { owner.fullname = owner.name + " " + owner.surname})
       },
       getBoxes: function() {
         let that = this;

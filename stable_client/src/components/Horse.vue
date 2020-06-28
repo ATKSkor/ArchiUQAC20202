@@ -110,6 +110,7 @@
                         <font-awesome-icon
                                 class="mx-2"
                                 icon="file-download"
+                                v-on:click="downloadMedicReport(horse)"
                                 v-if="horse.medicEntryIDs.length > 0">
 
                         </font-awesome-icon>
@@ -316,6 +317,23 @@
                 );
                 return availableBoxes;
             },
+            downloadMedicReport: function (horse) {
+                horse.medicEntryIDs.forEach(id => {
+                    axios({
+                        url: this.baseUrl + "/medic/" + id,
+                        method: "GET",
+                        responseType: "blob",
+                        withCredentials: true
+                    }).then((response => {
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', 'Report-' + id + '.pdf');
+                        document.body.appendChild(link);
+                        link.click();
+                    }))
+                })
+            }
         }
     }
 </script>
