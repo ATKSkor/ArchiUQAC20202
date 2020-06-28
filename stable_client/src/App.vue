@@ -122,13 +122,13 @@
         })
       },
       getOwners: function() {
-        this.owners = [
-          { id: 4, name: "Doe", surname : "John" },
-          { id: 3, name: "Martin", surname : "Pierre" },
-          { id: 2, name: "Muller", surname : "Hans" },
-          { id: 1, name: "West", surname : "Malik" },
-          { id: 9, name: "Owner", surname: "StarPony"}
-        ];
+        let that = this;
+        axios.get(this.baseUrl + '/person', { withCredentials: true })
+                .then(function (response) {
+                  that.owners = response.data;
+                }).catch(error => {
+          that.handleError({ title: "Error while retrieving member list", error: error })
+        });
         this.owners.forEach((owner) => { owner.fullname = owner.name + " " + owner.surname})
       },
       getBoxes: function() {
