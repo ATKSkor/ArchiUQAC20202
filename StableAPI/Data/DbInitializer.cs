@@ -32,7 +32,6 @@ namespace StableAPI.Data
 
             var persons = new Person[]
             {
-                new Person {Name = "Doe", Surname = "John"},
                 new Person {Name = "Martin", Surname = "Pierre"},
                 new Person {Name = "Muller", Surname = "Hans"},
                 new Person {Name = "West", Surname = "Malik"},
@@ -63,7 +62,7 @@ namespace StableAPI.Data
 
             var stables = new Stable[]
             {
-                new Stable {BossID = 5},
+                new Stable {BossID = null},
             };
             foreach (var stable in stables)
             {
