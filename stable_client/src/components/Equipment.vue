@@ -409,7 +409,16 @@
                 }
                 let that = this;
                 axios.post(this.baseUrl + '/stock/reserve', insertData, {withCredentials: true})
-                    .then(() => console.log('reservation ok'))
+                    .then(() => {
+                        this.$bvToast.toast(`Reservation received`, {
+                            title: 'Reservation',
+                            variant: 'success',
+                            toaster: 'b-toaster-top-center',
+                            'body-class' : 'dark-text',
+                            autoHideDelay: 50000,
+                            appendToast: true
+                        })
+                    })
                     .catch(error => {
                         that.$emit('error', { title : "Error while inserting new reservation", error : error });
                     })
