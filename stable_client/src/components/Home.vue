@@ -56,7 +56,7 @@
             </b-row>
             <b-row>
                 <b-col class="p-2" cols="12" sm="6" lg="4" v-if="rights.isAdmin">
-                    <b-btn to="/admin" class="w-100 huge-btn">
+                    <b-btn to="/admin" class="w-100 huge-btn" disabled>
                         <font-awesome-icon icon="user-shield"></font-awesome-icon><br>
                         <span>Admin</span>
                     </b-btn>
