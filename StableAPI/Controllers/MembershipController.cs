@@ -29,8 +29,6 @@ namespace StableAPI.Controllers
         {
             return await _context.Memberships
                 .Include(h => h.Person)
-                .Include(h => h.PersonID)
-                .Include(h => h.StableID)
                 .Include(h => h.Bills)
                 .Select(h => MemberToDo(h))
                 .ToListAsync();
@@ -43,8 +41,6 @@ namespace StableAPI.Controllers
             var person = await _context.Memberships
                 .Where(h => h.PersonID == id)
                 .Include(h => h.Person)
-                .Include(h => h.PersonID)
-                .Include(h => h.StableID)
                 .Include(h => h.Bills)
                 .FirstOrDefaultAsync();
 
