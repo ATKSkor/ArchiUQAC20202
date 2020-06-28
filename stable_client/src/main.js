@@ -16,7 +16,8 @@ import {
   faTimes,
   faCheck,
   faPlus,
-  faTrashAlt
+  faTrashAlt,
+  faCalendarCheck
 } from '@fortawesome/free-solid-svg-icons'
 import VueRouter from 'vue-router'
 import Home from "@/components/Home";
@@ -40,7 +41,8 @@ library.add(
     faTimes,
     faCheck,
     faPlus,
-    faTrashAlt
+    faTrashAlt,
+    faCalendarCheck
 )
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

@@ -4,7 +4,8 @@
         <b-table-simple class="table" table-variant="dark" hover small responsive="sm">
             <b-thead head-variant="dark">
                 <b-tr class="d-flex w-100">
-                    <b-th class="col-8 text-center">
+                    <b-th class="col-1"></b-th>
+                    <b-th class="col-7 text-center">
                         Item
                     </b-th>
                     <b-th class="col-2 text-center">
@@ -88,7 +89,15 @@
                         v-for="item in items"
                         :key="item.stableId + '-' + item.stockItemId"
                 >
-                    <b-td class="col-8 text-center">
+                    <b-td class="col-1">
+                        <font-awesome-icon
+                                class="mx-2"
+                                icon="calendar-check"
+                                v-on:click="() => reservation.stockEntryItemId = item.stockItemId"
+                                v-b-modal.modal-1
+                        ></font-awesome-icon>
+                    </b-td>
+                    <b-td class="col-7 text-center">
                         <span>{{ item.itemName }}</span>
                     </b-td>
                     <b-td class="col-2 text-center">
@@ -135,6 +144,68 @@
                 </b-tr>
             </b-tbody>
         </b-table-simple>
+        <b-modal
+                id="modal-1"
+                title="Item Reservation"
+                body-bg-variant="dark"
+                body-text-variant="light"
+                header-bg-variant="dark"
+                header-text-variant="light"
+                footer-text-variant="light"
+                footer-bg-variant="dark"
+                v-on:ok="reserve"
+                v-on:show="initReservation"
+                :ok-disabled="disabledReservation"
+        >
+            <label for="start-date">Start date:</label>
+            <b-form-datepicker
+                    dark
+                    hide-header
+                    size="sm"
+                    :min="minDate"
+                    :max="maxDate"
+                    id="start-date"
+                    v-on:input="computedDates()"
+                    v-model="reservation.date.startDate"
+            ></b-form-datepicker>
+            <label for="start-time">Start time:</label>
+            <b-form-timepicker
+                    dark
+                    no-close-button
+                    hide-header
+                    size="sm"
+                    id="start-time"
+                    v-on:input="computedDates()"
+                    v-model="reservation.date.startTime"
+            ></b-form-timepicker>
+            <label for="end-date">Start date:</label>
+            <b-form-datepicker
+                    dark
+                    hide-header
+                    size="sm"
+                    :min="minDate"
+                    :max="maxDate"
+                    id="end-date"
+                    v-on:input="computedDates()"
+                    v-model="reservation.date.endDate"
+            ></b-form-datepicker>
+            <label for="end-time">Start time:</label>
+            <b-form-timepicker
+                    dark
+                    no-close-button
+                    hide-header
+                    size="sm"
+                    id="end-time"
+                    v-on:input="computedDates()"
+                    v-model="reservation.date.endTime"
+            ></b-form-timepicker>
+            <label for="quantity">Quantity</label>
+            <b-form-input
+                    id="quantity"
+                    type="number"
+                    v-model="reservation.quantity"
+            ></b-form-input>
+        </b-modal>
     </b-container>
     <b-container v-else>
         <em class="d-block mx-auto pb-3 text-center">401 Unauthorized - Access can not be granted</em>
@@ -158,6 +229,19 @@
             return {
                 items: [],
                 itemTypes: [],
+                reservation: {
+                    stockEntryItemId: 1,
+                    stockEntryStableId: 1,
+                    date: {
+                        startDate: "2020-07-01",
+                        startTime: "15:00:00",
+                        endDate: "2020-07-01",
+                        endTime: "16:00:00"
+                    },
+                    startDate: "2020-07-01T15:00:00",
+                    endDate: "2020-07-01T16:00:00",
+                    quantity: 49
+                },
                 newItem: undefined,
                 newType: false,
                 savedItem: undefined,
@@ -308,6 +392,51 @@
                 this.newType = false;
                 this.newItem.itemName = "";
                 this.newItem.stockItemId = this.availableTypes[0] !== undefined ? this.availableTypes[0].id : 0;
+            },
+            computedDates: function () {
+                const r = this.reservation;
+                r.startDate = r.date.startDate + 'T' + r.date.startTime;
+                r.endDate = r.date.endDate + 'T' + r.date.endTime;
+            },
+            reserve: function () {
+                const r = this.reservation;
+                const insertData = {
+                    stockEntryItemId: parseInt(r.stockEntryItemId, 10),
+                    stockEntryStableId: r.stockEntryStableId,
+                    startDate: r.startDate,
+                    endDate: r.endDate,
+                    quantity: parseInt(r.quantity)
+                }
+                let that = this;
+                axios.post(this.baseUrl + '/stock/reserve', insertData, {withCredentials: true})
+                    .then(() => {
+                        this.$bvToast.toast(`Reservation received`, {
+                            title: 'Reservation',
+                            variant: 'success',
+                            toaster: 'b-toaster-top-center',
+                            'body-class' : 'dark-text',
+                            autoHideDelay: 50000,
+                            appendToast: true
+                        })
+                    })
+                    .catch(error => {
+                        that.$emit('error', { title : "Error while inserting new reservation", error : error });
+                    })
+            },
+            initReservation: function () {
+                this.reservation = {
+                    stockEntryItemId: 1,
+                    stockEntryStableId: 1,
+                    startDate: (new Date()).toJSON().substr(0,19),
+                    endDate: (new Date(Date.now() + 3.6e+6)).toJSON().substr(0,19),
+                    quantity: 1
+                }
+                this.reservation.date = {
+                    startDate: this.reservation.startDate.substr(0, 10),
+                    startTime: this.reservation.startDate.substr(11, 5),
+                    endDate: this.reservation.endDate.substr(0, 10),
+                    endTime: this.reservation.endDate.substr(11, 5),
+                };
             }
         },
         computed: {
@@ -349,6 +478,17 @@
                     )
                 );
                 return availableTypes;
+            },
+            minDate: function () {
+                const now = new Date();
+                return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            },
+            maxDate: function () {
+                const now = new Date();
+                return new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
+            },
+            disabledReservation: function () {
+                return this.reservation.startDate >= this.reservation.endDate;
             }
         }
     }
@@ -359,7 +499,7 @@
         svg {
             &:hover:not(.disabled)  {
                 cursor: pointer;
-                &.fa-edit, &.fa-file-download {
+                &.fa-edit, &.fa-file-download, &.fa-calendar-check {
                     path {
                         color: rgba(0, 123, 255, 0.8);
                     }
@@ -381,7 +521,6 @@
                         color: rgba(108, 117, 125, 0.8);
                     }
                 }
-
             }
             &.fa-times, &.fa-trash-alt {
                 &:not(.disabled) {
